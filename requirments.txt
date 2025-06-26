@@ -1,1 +1,2 @@
-random module is required for the game to generate random numbers for the game.
+# No external libraries required.
+python>=3.8
