@@ -2,17 +2,17 @@ import React, { useState } from 'react';
 import { useBudget } from '@/context/BudgetContext';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, TextInput } from 'react-native';
 
-export default function ExpensesScreen() {
+export default function IncomeScreen() {
   const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [value, setValue] = useState('');
-  const { expenses, addExpense } = useBudget();
+  const { incomes, addIncome } = useBudget();
   const categories = [
-    'Grocery', 'Restaurants', 'Home', 'Transport', 'Health', 'Education', 'Entertainment', 'Shopping', 'Travel', 'Utilities', 'Insurance', 'Gifts', 'Other'
+    'Salary', 'Bonus', 'Investments', 'Gifts', 'Refunds', 'Interest', 'Dividends', 'Business Income', 'Pension', 'Sale of Assets', 'Other'
   ];
-  const handleAddExpense = () => {
+  const handleAddIncome = () => {
     if (selectedCategory && value) {
-      addExpense({ category: selectedCategory, value });
+      addIncome({ category: selectedCategory, value });
       setSelectedCategory('');
       setValue('');
     }
@@ -47,15 +47,15 @@ export default function ExpensesScreen() {
           onChangeText={setValue}
         />
       </View>
-      {/* Table of Expenses */}
-      {expenses.length > 0 && (
+      {/* Table of Income */}
+      {incomes.length > 0 && (
         <View style={styles.tableBox}>
           <View style={styles.tableHeader}>
             <Text style={styles.tableHeaderText}>Category</Text>
             <Text style={styles.tableHeaderText}>Value</Text>
           </View>
           <FlatList
-            data={expenses}
+            data={incomes}
             keyExtractor={(_, idx) => idx.toString()}
             renderItem={({ item }) => (
               <View style={styles.tableRow}>
@@ -66,79 +66,15 @@ export default function ExpensesScreen() {
           />
         </View>
       )}
-      <Text style={styles.title}>Expenses Page</Text>
-      <TouchableOpacity style={styles.expensesBottomButton} onPress={handleAddExpense}>
-        <Text style={styles.expensesBottomButtonText}>Expenses</Text>
+      <Text style={styles.title}>Income Page</Text>
+      <TouchableOpacity style={styles.incomeBottomButton} onPress={handleAddIncome}>
+        <Text style={styles.incomeBottomButtonText}>Income</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  tableBox: {
-    width: '90%',
-    alignSelf: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 8,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: '#BDBDBD',
-  },
-  tableHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#EEE',
-  },
-  tableHeaderText: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    color: '#333',
-    width: '50%',
-    textAlign: 'center',
-  },
-  tableRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#EEE',
-  },
-  tableCell: {
-    fontSize: 16,
-    color: '#333',
-    width: '50%',
-    textAlign: 'center',
-  },
-  valueBox: {
-    width: '90%',
-    alignSelf: 'center',
-    backgroundColor: '#F5F5F5',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: '#BDBDBD',
-    alignItems: 'flex-start',
-  },
-  valueLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 8,
-  },
-  valueInput: {
-    width: '100%',
-    fontSize: 18,
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#BDBDBD',
-    padding: 10,
-    color: '#333',
-  },
   categoriesBox: {
     width: '90%',
     marginTop: 32,
@@ -177,12 +113,76 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
-  expensesBottomButton: {
+  valueBox: {
+    width: '90%',
+    alignSelf: 'center',
+    backgroundColor: '#F5F5F5',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#BDBDBD',
+    alignItems: 'flex-start',
+  },
+  valueLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 8,
+  },
+  valueInput: {
+    width: '100%',
+    fontSize: 18,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#BDBDBD',
+    padding: 10,
+    color: '#333',
+  },
+  tableBox: {
+    width: '90%',
+    alignSelf: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 8,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#BDBDBD',
+  },
+  tableHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#EEE',
+  },
+  tableHeaderText: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: '#333',
+    width: '50%',
+    textAlign: 'center',
+  },
+  tableRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#EEE',
+  },
+  tableCell: {
+    fontSize: 16,
+    color: '#333',
+    width: '50%',
+    textAlign: 'center',
+  },
+  incomeBottomButton: {
     position: 'absolute',
     bottom: 24,
     left: 24,
     right: 24,
-    backgroundColor: '#D32F2F',
+    backgroundColor: '#388E3C',
     borderRadius: 32,
     paddingVertical: 16,
     alignItems: 'center',
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 3,
   },
-  expensesBottomButtonText: {
+  incomeBottomButtonText: {
     color: '#fff',
     fontSize: 20,
     fontWeight: 'bold',
@@ -206,6 +206,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#D32F2F',
+    color: '#388E3C',
   },
 });
