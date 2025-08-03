@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { TouchableOpacity } from 'react-native';
+import { Dimensions, TouchableOpacity } from 'react-native';
+import { PieChart } from 'react-native-chart-kit';
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 import { Image } from 'expo-image';
@@ -37,25 +38,74 @@ export default function HomeScreen() {
       </ThemedView>
       {/* Time Filter Section - Show for both EXPENSES and INCOME tabs */}
       {(activeTab === 'EXPENSES' || activeTab === 'INCOME') && (
-        <ThemedView style={styles.filterContainer}>
-          <ThemedView style={styles.rangeRow}>
-            {['Day', 'Week', 'Month', 'Year', 'Period'].map(range => (
-              <Button
-                key={range}
-                title={range}
-                color={selectedRange === range ? '#1976D2' : '#BDBDBD'}
-                onPress={() => setSelectedRange(range as any)}
-              />
-            ))}
+        <>
+          <ThemedView style={styles.filterContainer}>
+            <ThemedView style={styles.rangeRow}>
+              {['Day', 'Week', 'Month', 'Year', 'Period'].map(range => (
+                <Button
+                  key={range}
+                  title={range}
+                  color={selectedRange === range ? '#1976D2' : '#BDBDBD'}
+                  onPress={() => setSelectedRange(range as any)}
+                />
+              ))}
+            </ThemedView>
+            <ThemedText style={styles.selectedDate}>{selectedDate}</ThemedText>
           </ThemedView>
-          <ThemedText style={styles.selectedDate}>{selectedDate}</ThemedText>
-        </ThemedView>
+          {/* Pie Chart Section */}
+          <ThemedView style={styles.pieContainer}>
+            <PieChart
+              data={[
+                { name: 'Credits', population: 980, color: '#4CAF50', legendFontColor: '#333', legendFontSize: 12 },
+                { name: 'Grocery', population: 32, color: '#2196F3', legendFontColor: '#333', legendFontSize: 12 },
+                { name: 'Restaurants', population: 2500, color: '#FFC107', legendFontColor: '#333', legendFontSize: 12 },
+                { name: 'Home', population: 625, color: '#F44336', legendFontColor: '#333', legendFontSize: 12 },
+              ]}
+              width={Dimensions.get('window').width - 32}
+              height={180}
+              chartConfig={{
+                backgroundColor: '#fff',
+                backgroundGradientFrom: '#fff',
+                backgroundGradientTo: '#fff',
+                color: (opacity = 1) => `rgba(51, 51, 51, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(51, 51, 51, ${opacity})`,
+              }}
+              accessor="population"
+              // Remove unsupported props: hasLegend, center, absolute
+            />
+            <TouchableOpacity style={styles.addButton} onPress={() => {/* Add expense logic */}}>
+              <Ionicons name="add-circle" size={48} color="#FFA000" />
+            </TouchableOpacity>
+            <ThemedText style={styles.pieCenterText}>
+              {activeTab === 'EXPENSES' ? 'Total Expenses: 2845 $' : 'Total Income: ...'}
+            </ThemedText>
+          </ThemedView>
+        </>
       )}
     </>
   );
 }
 
 const styles = StyleSheet.create({
+  pieContainer: {
+    alignItems: 'center',
+    marginVertical: 16,
+    position: 'relative',
+  },
+  addButton: {
+    position: 'absolute',
+    right: 24,
+    top: 24,
+    zIndex: 10,
+  },
+  pieCenterText: {
+    position: 'absolute',
+    top: 80,
+    left: '40%',
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+  },
   filterContainer: {
     backgroundColor: '#fff',
     borderRadius: 16,
