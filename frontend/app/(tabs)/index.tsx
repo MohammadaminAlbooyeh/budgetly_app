@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Dimensions, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { PieChart } from 'react-native-chart-kit';
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
@@ -14,9 +15,11 @@ export default function HomeScreen() {
   // Example balance value
   const [balance, setBalance] = useState(0);
   const [activeTab, setActiveTab] = useState<'EXPENSES' | 'INCOME'>('EXPENSES');
+  const navigation = useNavigation();
 
   return (
     <>
+      {/* ...existing code... */}
       <ThemedView style={styles.header}>
         <TouchableOpacity style={styles.menuIcon} onPress={() => {}}>
           <Ionicons name="menu" size={32} color="#333" />
@@ -36,7 +39,7 @@ export default function HomeScreen() {
           />
         </ThemedView>
       </ThemedView>
-      {/* Time Filter Section - Show for both EXPENSES and INCOME tabs */}
+      {/* ...existing code... */}
       {(activeTab === 'EXPENSES' || activeTab === 'INCOME') && (
         <>
           <ThemedView style={styles.filterContainer}>
@@ -71,20 +74,25 @@ export default function HomeScreen() {
                 labelColor: (opacity = 1) => `rgba(51, 51, 51, ${opacity})`,
               }}
               accessor="population"
-              // Remove unsupported props: hasLegend, center, absolute
             />
             <TouchableOpacity style={styles.addButton} onPress={() => {/* Add expense logic */}}>
               <Ionicons name="add-circle" size={48} color="#FFA000" />
             </TouchableOpacity>
-            <ThemedText style={styles.pieCenterText}>
+            {/* Move total expenses text below chart and button */}
+            <ThemedText style={styles.pieTotalText}>
               {activeTab === 'EXPENSES' ? 'Total Expenses: 2845 $' : 'Total Income: ...'}
             </ThemedText>
           </ThemedView>
         </>
       )}
+      {/* Add red Expenses button at the bottom */}
+      <TouchableOpacity style={styles.expensesBottomButton} onPress={() => navigation.navigate('ExpensesScreen')}>
+        <ThemedText style={styles.expensesBottomButtonText}>Expenses</ThemedText>
+      </TouchableOpacity>
     </>
   );
 }
+  
 
 const styles = StyleSheet.create({
   pieContainer: {
@@ -98,13 +106,12 @@ const styles = StyleSheet.create({
     top: 24,
     zIndex: 10,
   },
-  pieCenterText: {
-    position: 'absolute',
-    top: 80,
-    left: '40%',
+  pieTotalText: {
+    marginTop: 24,
     fontSize: 20,
     fontWeight: 'bold',
     color: '#333',
+    textAlign: 'center',
   },
   filterContainer: {
     backgroundColor: '#fff',
@@ -160,5 +167,25 @@ const styles = StyleSheet.create({
   tabs: {
     flexDirection: 'row',
     gap: 12,
+  },
+  expensesBottomButton: {
+    position: 'absolute',
+    bottom: 24,
+    left: 24,
+    right: 24,
+    backgroundColor: '#D32F2F',
+    borderRadius: 32,
+    paddingVertical: 16,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  expensesBottomButtonText: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+    letterSpacing: 1,
   },
 });
