@@ -6,10 +6,8 @@ export default function IncomeScreen() {
   const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [value, setValue] = useState('');
-  const { incomes, addIncome } = useBudget();
-  const categories = [
-    'Salary', 'Bonus', 'Investments', 'Gifts', 'Refunds', 'Interest', 'Dividends', 'Business Income', 'Pension', 'Sale of Assets', 'Other'
-  ];
+  const { incomes, addIncome, incomeCategories } = useBudget();
+  const categories = incomeCategories;
   const handleAddIncome = () => {
     if (selectedCategory && value) {
       addIncome({ category: selectedCategory, value });

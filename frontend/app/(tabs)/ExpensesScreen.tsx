@@ -6,10 +6,8 @@ export default function ExpensesScreen() {
   const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [value, setValue] = useState('');
-  const { expenses, addExpense } = useBudget();
-  const categories = [
-    'Grocery', 'Restaurants', 'Home', 'Transport', 'Health', 'Education', 'Entertainment', 'Shopping', 'Travel', 'Utilities', 'Insurance', 'Gifts', 'Other'
-  ];
+  const { expenses, addExpense, expenseCategories } = useBudget();
+  const categories = expenseCategories;
   const handleAddExpense = () => {
     if (selectedCategory && value) {
       addExpense({ category: selectedCategory, value });
