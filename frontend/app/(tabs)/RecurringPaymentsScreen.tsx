@@ -53,55 +53,59 @@ export default function RecurringPaymentsScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Recurring Payments</Text>
+  <Text style={styles.title} accessibilityRole="header" accessibilityLabel="Recurring Payments">Recurring Payments</Text>
       <View style={styles.formRow}>
-        <Text>Type:</Text>
+        <Text style={styles.label} accessibilityLabel="Type">Type:</Text>
         <Picker
           selectedValue={form.type}
           style={styles.picker}
           onValueChange={v => setForm(f => ({ ...f, type: v }))}
+          accessibilityLabel="Type Picker"
+          accessibilityRole="combobox"
         >
           {types.map(t => <Picker.Item key={t} label={t} value={t} />)}
         </Picker>
       </View>
       <View style={styles.formRow}>
-        <Text>Category:</Text>
-        <TextInput style={styles.input} value={form.category} onChangeText={v => setForm(f => ({ ...f, category: v }))} placeholder="Category" />
+        <Text style={styles.label} accessibilityLabel="Category">Category:</Text>
+        <TextInput style={styles.input} value={form.category} onChangeText={v => setForm(f => ({ ...f, category: v }))} placeholder="Category" accessibilityLabel="Category Input" accessibilityRole="textbox" />
       </View>
       <View style={styles.formRow}>
-        <Text>Value:</Text>
-        <TextInput style={styles.input} value={form.value} onChangeText={v => setForm(f => ({ ...f, value: v }))} placeholder="Amount" keyboardType="numeric" />
+        <Text style={styles.label} accessibilityLabel="Value">Value:</Text>
+        <TextInput style={styles.input} value={form.value} onChangeText={v => setForm(f => ({ ...f, value: v }))} placeholder="Amount" keyboardType="numeric" accessibilityLabel="Value Input" accessibilityRole="spinbutton" />
       </View>
       <View style={styles.formRow}>
-        <Text>Start Date:</Text>
-        <TextInput style={styles.input} value={form.start_date} onChangeText={v => setForm(f => ({ ...f, start_date: v }))} placeholder="YYYY-MM-DD" />
+        <Text style={styles.label} accessibilityLabel="Start Date">Start Date:</Text>
+        <TextInput style={styles.input} value={form.start_date} onChangeText={v => setForm(f => ({ ...f, start_date: v }))} placeholder="YYYY-MM-DD" accessibilityLabel="Start Date Input" accessibilityRole="textbox" />
       </View>
       <View style={styles.formRow}>
-        <Text>Frequency:</Text>
+        <Text style={styles.label} accessibilityLabel="Frequency">Frequency:</Text>
         <Picker
           selectedValue={form.frequency}
           style={styles.picker}
           onValueChange={v => setForm(f => ({ ...f, frequency: v }))}
+          accessibilityLabel="Frequency Picker"
+          accessibilityRole="combobox"
         >
           {frequencies.map(f => <Picker.Item key={f} label={f} value={f} />)}
         </Picker>
       </View>
       <View style={styles.formRow}>
-        <Text>Note:</Text>
-        <TextInput style={styles.input} value={form.note} onChangeText={v => setForm(f => ({ ...f, note: v }))} placeholder="Note (optional)" />
+        <Text style={styles.label} accessibilityLabel="Note">Note:</Text>
+        <TextInput style={styles.input} value={form.note} onChangeText={v => setForm(f => ({ ...f, note: v }))} placeholder="Note (optional)" accessibilityLabel="Note Input" accessibilityRole="textbox" />
       </View>
-      <TouchableOpacity style={styles.addButton} onPress={handleAddOrUpdate}>
+      <TouchableOpacity style={styles.addButton} onPress={handleAddOrUpdate} accessibilityRole="button" accessibilityLabel={editingId === null ? 'Add Payment' : 'Update Payment'}>
         <Text style={styles.buttonText}>{editingId === null ? 'Add' : 'Update'}</Text>
       </TouchableOpacity>
-      <Text style={styles.sectionTitle}>List</Text>
+  <Text style={styles.sectionTitle} accessibilityRole="header" accessibilityLabel="Payments List">List</Text>
       <FlatList
         data={payments}
         keyExtractor={item => String(item.id)}
         renderItem={({ item }) => (
-          <View style={styles.paymentRow}>
+          <View style={styles.paymentRow} accessible accessibilityRole="listitem" accessibilityLabel={`Payment: ${item.type}, ${item.category}, ${item.value}, ${item.frequency}, ${item.start_date}`}>
             <Text style={styles.paymentText}>{item.type} | {item.category} | {item.value} | {item.frequency} | {item.start_date}</Text>
-            <TouchableOpacity style={styles.editButton} onPress={() => handleEdit(item)}><Text style={styles.buttonText}>Edit</Text></TouchableOpacity>
-            <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(item.id)}><Text style={styles.buttonText}>Delete</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.editButton} onPress={() => handleEdit(item)} accessibilityRole="button" accessibilityLabel="Edit Payment"><Text style={styles.buttonText}>Edit</Text></TouchableOpacity>
+            <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(item.id)} accessibilityRole="button" accessibilityLabel="Delete Payment"><Text style={styles.buttonText}>Delete</Text></TouchableOpacity>
           </View>
         )}
       />
@@ -111,15 +115,16 @@ export default function RecurringPaymentsScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: '#fff' },
-  title: { fontSize: 28, fontWeight: 'bold', marginBottom: 24, textAlign: 'center', color: '#333' },
-  sectionTitle: { fontSize: 20, fontWeight: 'bold', marginTop: 16, marginBottom: 8, color: '#333' },
-  formRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
-  input: { borderWidth: 1, borderColor: '#BDBDBD', borderRadius: 8, padding: 8, fontSize: 16, flex: 1, marginLeft: 8, backgroundColor: '#F5F5F5' },
+  title: { fontSize: 32, fontWeight: 'bold', marginBottom: 28, textAlign: 'center', color: '#333' },
+  sectionTitle: { fontSize: 24, fontWeight: 'bold', marginTop: 20, marginBottom: 12, color: '#333' },
+  label: { fontSize: 20, color: '#333', marginRight: 8 },
+  formRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
+  input: { borderWidth: 1, borderColor: '#BDBDBD', borderRadius: 8, padding: 12, fontSize: 20, flex: 1, marginLeft: 8, backgroundColor: '#F5F5F5' },
   picker: { flex: 1, marginLeft: 8 },
-  addButton: { backgroundColor: '#4BC0C0', padding: 12, borderRadius: 8, marginTop: 8, alignItems: 'center' },
-  buttonText: { color: '#fff', fontWeight: 'bold' },
-  paymentRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
-  paymentText: { flex: 1, fontSize: 16, color: '#333' },
-  editButton: { backgroundColor: '#36A2EB', padding: 8, borderRadius: 8, marginLeft: 8 },
-  deleteButton: { backgroundColor: '#F7464A', padding: 8, borderRadius: 8, marginLeft: 8 },
+  addButton: { backgroundColor: '#4BC0C0', padding: 16, borderRadius: 8, marginTop: 12, alignItems: 'center' },
+  buttonText: { color: '#fff', fontWeight: 'bold', fontSize: 18 },
+  paymentRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
+  paymentText: { flex: 1, fontSize: 20, color: '#333' },
+  editButton: { backgroundColor: '#36A2EB', padding: 10, borderRadius: 8, marginLeft: 8 },
+  deleteButton: { backgroundColor: '#F7464A', padding: 10, borderRadius: 8, marginLeft: 8 },
 });

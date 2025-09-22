@@ -2,6 +2,7 @@ import * as React from 'react';
 import { View, Text, ScrollView, StyleSheet, Dimensions } from 'react-native';
 import { useBudget } from '@/context/BudgetContext';
 import { PieChart } from 'react-native-chart-kit';
+import { LineChart } from 'react-native-chart-kit';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -30,9 +31,42 @@ export default function ReportsScreen() {
   const incomeData = getChartData(incomes);
   const expenseData = getChartData(expenses);
 
+  // Monthly trends
+  function getMonthlyTotals(entries: Entry[]) {
+    const monthly: Record<string, number> = {};
+    entries.forEach(e => {
+      const month = e.date ? e.date.slice(0, 7) : 'Unknown';
+      monthly[month] = (monthly[month] || 0) + Number(e.value);
+    });
+    return monthly;
+  }
+  const expenseMonthly = getMonthlyTotals(expenses);
+  const incomeMonthly = getMonthlyTotals(incomes);
+  const months = Array.from(new Set([...Object.keys(expenseMonthly), ...Object.keys(incomeMonthly)])).sort();
+  const expenseMonthlyData = months.map(m => expenseMonthly[m] || 0);
+  const incomeMonthlyData = months.map(m => incomeMonthly[m] || 0);
+
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Reports</Text>
+      <Text style={styles.sectionTitle}>Monthly Trends</Text>
+      {months.length > 0 ? (
+        <LineChart
+          data={{
+            labels: months,
+            datasets: [
+              { data: expenseMonthlyData, color: () => '#F7464A', strokeWidth: 2, label: 'Expenses' },
+              { data: incomeMonthlyData, color: () => '#36A2EB', strokeWidth: 2, label: 'Incomes' },
+            ],
+            legend: ['Expenses', 'Incomes'],
+          }}
+          width={screenWidth - 32}
+          height={220}
+          chartConfig={chartConfig}
+          bezier
+          style={{ marginVertical: 8, borderRadius: 16 }}
+        />
+      ) : <Text style={styles.emptyText}>No monthly data</Text>}
       <Text style={styles.sectionTitle}>Income by Category</Text>
       {incomeData.length > 0 ? (
         <PieChart

@@ -3,6 +3,38 @@ import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('budgetly.db');
 
 export function initDB() {
+    tx.executeSql(
+      `CREATE TABLE IF NOT EXISTS budget_goals (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        type TEXT, -- 'expense' or 'income'
+        period TEXT, -- 'monthly' or 'weekly'
+        amount REAL
+      );`
+    );
+// Budget Goals CRUD
+export function getBudgetGoals(callback: (items: {id: number, type: string, period: string, amount: number}[]) => void) {
+  db.transaction(tx => {
+    tx.executeSql('SELECT * FROM budget_goals;', [], (_, { rows }) => callback(rows._array));
+  });
+}
+
+export function addBudgetGoal(type: string, period: string, amount: number, callback?: () => void) {
+  db.transaction(tx => {
+    tx.executeSql('INSERT INTO budget_goals (type, period, amount) VALUES (?, ?, ?);', [type, period, amount], () => callback && callback());
+  });
+}
+
+export function updateBudgetGoal(id: number, amount: number, callback?: () => void) {
+  db.transaction(tx => {
+    tx.executeSql('UPDATE budget_goals SET amount = ? WHERE id = ?;', [amount, id], () => callback && callback());
+  });
+}
+
+export function deleteBudgetGoal(id: number, callback?: () => void) {
+  db.transaction(tx => {
+    tx.executeSql('DELETE FROM budget_goals WHERE id = ?;', [id], () => callback && callback());
+  });
+}
   db.transaction(tx => {
     tx.executeSql(
       `CREATE TABLE IF NOT EXISTS expense_categories (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE);`
@@ -24,23 +56,30 @@ export function initDB() {
         value REAL,
         start_date TEXT,
         frequency TEXT, -- 'daily', 'weekly', 'monthly', 'yearly'
-        note TEXT
+        note TEXT,
+        reminders TEXT -- JSON string: [{days: number, hours: number}]
       );`
     );
   });
 }
 // Recurring Payments CRUD
-export function getRecurringPayments(callback: (items: {id: number, type: string, category: string, value: number, start_date: string, frequency: string, note: string}[]) => void) {
+export function getRecurringPayments(callback: (items: {id: number, type: string, category: string, value: number, start_date: string, frequency: string, note: string, reminders: Array<{days: number, hours: number}>}[]) => void) {
   db.transaction(tx => {
-    tx.executeSql('SELECT * FROM recurring_payments;', [], (_, { rows }) => callback(rows._array));
+    tx.executeSql('SELECT * FROM recurring_payments;', [], (_, { rows }) => {
+      const arr = rows._array.map((row: any) => ({
+        ...row,
+        reminders: row.reminders ? JSON.parse(row.reminders) : [],
+      }));
+      callback(arr);
+    });
   });
 }
 
-export function addRecurringPayment(type: string, category: string, value: number, start_date: string, frequency: string, note: string, callback?: () => void) {
+export function addRecurringPayment(type: string, category: string, value: number, start_date: string, frequency: string, note: string, reminders: Array<{days: number, hours: number}>, callback?: () => void) {
   db.transaction(tx => {
     tx.executeSql(
-      'INSERT INTO recurring_payments (type, category, value, start_date, frequency, note) VALUES (?, ?, ?, ?, ?, ?);',
-      [type, category, value, start_date, frequency, note],
+      'INSERT INTO recurring_payments (type, category, value, start_date, frequency, note, reminders) VALUES (?, ?, ?, ?, ?, ?, ?);',
+      [type, category, value, start_date, frequency, note, JSON.stringify(reminders)],
       () => callback && callback()
     );
   });
@@ -52,11 +91,11 @@ export function deleteRecurringPayment(id: number, callback?: () => void) {
   });
 }
 
-export function updateRecurringPayment(id: number, type: string, category: string, value: number, start_date: string, frequency: string, note: string, callback?: () => void) {
+export function updateRecurringPayment(id: number, type: string, category: string, value: number, start_date: string, frequency: string, note: string, reminders: Array<{days: number, hours: number}>, callback?: () => void) {
   db.transaction(tx => {
     tx.executeSql(
-      'UPDATE recurring_payments SET type = ?, category = ?, value = ?, start_date = ?, frequency = ?, note = ? WHERE id = ?;',
-      [type, category, value, start_date, frequency, note, id],
+      'UPDATE recurring_payments SET type = ?, category = ?, value = ?, start_date = ?, frequency = ?, note = ?, reminders = ? WHERE id = ?;',
+      [type, category, value, start_date, frequency, note, JSON.stringify(reminders), id],
       () => callback && callback()
     );
   });
