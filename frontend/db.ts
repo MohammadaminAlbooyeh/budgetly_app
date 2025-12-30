@@ -3,6 +3,7 @@ import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('budgetly.db');
 
 export function initDB() {
+  db.transaction(tx => {
     tx.executeSql(
       `CREATE TABLE IF NOT EXISTS budget_goals (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -11,31 +12,6 @@ export function initDB() {
         amount REAL
       );`
     );
-// Budget Goals CRUD
-export function getBudgetGoals(callback: (items: {id: number, type: string, period: string, amount: number}[]) => void) {
-  db.transaction(tx => {
-    tx.executeSql('SELECT * FROM budget_goals;', [], (_, { rows }) => callback(rows._array));
-  });
-}
-
-export function addBudgetGoal(type: string, period: string, amount: number, callback?: () => void) {
-  db.transaction(tx => {
-    tx.executeSql('INSERT INTO budget_goals (type, period, amount) VALUES (?, ?, ?);', [type, period, amount], () => callback && callback());
-  });
-}
-
-export function updateBudgetGoal(id: number, amount: number, callback?: () => void) {
-  db.transaction(tx => {
-    tx.executeSql('UPDATE budget_goals SET amount = ? WHERE id = ?;', [amount, id], () => callback && callback());
-  });
-}
-
-export function deleteBudgetGoal(id: number, callback?: () => void) {
-  db.transaction(tx => {
-    tx.executeSql('DELETE FROM budget_goals WHERE id = ?;', [id], () => callback && callback());
-  });
-}
-  db.transaction(tx => {
     tx.executeSql(
       `CREATE TABLE IF NOT EXISTS expense_categories (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT UNIQUE);`
     );
@@ -60,6 +36,31 @@ export function deleteBudgetGoal(id: number, callback?: () => void) {
         reminders TEXT -- JSON string: [{days: number, hours: number}]
       );`
     );
+  });
+}
+
+// Budget Goals CRUD
+export function getBudgetGoals(callback: (items: {id: number, type: string, period: string, amount: number}[]) => void) {
+  db.transaction(tx => {
+    tx.executeSql('SELECT * FROM budget_goals;', [], (_, { rows }) => callback(rows._array));
+  });
+}
+
+export function addBudgetGoal(type: string, period: string, amount: number, callback?: () => void) {
+  db.transaction(tx => {
+    tx.executeSql('INSERT INTO budget_goals (type, period, amount) VALUES (?, ?, ?);', [type, period, amount], () => callback && callback());
+  });
+}
+
+export function updateBudgetGoal(id: number, amount: number, callback?: () => void) {
+  db.transaction(tx => {
+    tx.executeSql('UPDATE budget_goals SET amount = ? WHERE id = ?;', [amount, id], () => callback && callback());
+  });
+}
+
+export function deleteBudgetGoal(id: number, callback?: () => void) {
+  db.transaction(tx => {
+    tx.executeSql('DELETE FROM budget_goals WHERE id = ?;', [id], () => callback && callback());
   });
 }
 // Recurring Payments CRUD

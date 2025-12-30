@@ -27,17 +27,52 @@ export default function TabLayout() {
         }),
       }}>
       <Tabs.Screen
-    <Tabs.Screen
-      name="BudgetGoalsScreen"
-      options={{
-        title: 'Budget Goals',
-        tabBarIcon: ({ color }: { color: string }) => <IconSymbol size={28} name="target" color={color} />,
-      }}
-    />
         name="index"
         options={{
           title: 'Home',
           tabBarIcon: ({ color }: { color: string }) => <IconSymbol size={28} name="house.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="BudgetGoalsScreen"
+        options={{
+          title: 'Budget Goals',
+          tabBarIcon: ({ color }: { color: string }) => <IconSymbol size={28} name="target" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="ExpensesScreen"
+        options={{
+          title: 'Expenses',
+          tabBarIcon: ({ color }: { color: string }) => <IconSymbol size={28} name="minus.circle.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="IncomeScreen"
+        options={{
+          title: 'Income',
+          tabBarIcon: ({ color }: { color: string }) => <IconSymbol size={28} name="plus.circle.fill" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="CategoriesScreen"
+        options={{
+          title: 'Categories',
+          tabBarIcon: ({ color }: { color: string }) => <IconSymbol size={28} name="list.bullet" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="RecurringPaymentsScreen"
+        options={{
+          title: 'Recurring',
+          tabBarIcon: ({ color }: { color: string }) => <IconSymbol size={28} name="repeat" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="ReportsScreen"
+        options={{
+          title: 'Reports',
+          tabBarIcon: ({ color }: { color: string }) => <IconSymbol size={28} name="chart.pie.fill" color={color} />,
         }}
       />
       <Tabs.Screen
@@ -47,20 +82,6 @@ export default function TabLayout() {
           tabBarIcon: ({ color }: { color: string }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
         }}
       />
-        <Tabs.Screen
-          name="ReportsScreen"
-          options={{
-            title: 'Reports',
-            tabBarIcon: ({ color }: { color: string }) => <IconSymbol size={28} name="chart.pie.fill" color={color} />,
-          }}
-        />
-        <Tabs.Screen
-          name="CategoriesScreen"
-          options={{
-            title: 'Categories',
-            tabBarIcon: ({ color }: { color: string }) => <IconSymbol size={28} name="list.bullet" color={color} />,
-          }}
-        />
     </Tabs>
   );
 }
